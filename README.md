@@ -4,7 +4,7 @@ This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next
 
 First, run the development server:
 ## node 版本
-node版本需要大于18
+node版本需要大于18(>=18.17.0)
 
 ```bash
 npm run dev

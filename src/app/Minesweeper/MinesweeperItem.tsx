@@ -5,30 +5,53 @@ import { MineGap, MineWidth } from "@/app/Minesweeper/utils";
 const MinesweeperItem = ({
   finishGame,
   mine = false,
+  currentCoordinate,
+  id,
+  gameId,
+  updateSafeCount,
 }: {
   finishGame: () => void;
   mine?: boolean;
+  currentCoordinate: string;
+  id: string;
+  gameId: number;
+  updateSafeCount: () => void;
 }) => {
   const [isClicked, setIsClicked] = useState(false);
-  const [isFlagged, setIsFlagged] = useState(false);
-  const [isRevealed, setIsRevealed] = useState(false);
   const [isMine, setIsMine] = useState(false);
   const [backgroundColor, setBackgroundColor] = useState("white");
   useEffect(() => {
-    if (mine) {
-      setIsMine(true);
-    }
+    // 开启新一轮游戏了，通过gameId重置方格的状态
+    setIsClicked(false);
+    setBackgroundColor("white");
+  }, [gameId]);
+
+  useEffect(() => {
+    setIsMine(mine);
   }, [mine]);
+
+  useEffect(() => {
+    if (currentCoordinate == id) {
+      handleClick();
+    }
+  }, [currentCoordinate, id]);
 
   const handleClick = () => {
     if (isMine) {
-      setBackgroundColor("red");
-      finishGame();
+      handleIsMine();
     } else if (!isClicked) {
-      setBackgroundColor("green");
-      setIsClicked(true);
-      // 这里可以添加点击后的逻辑，例如揭露周围格子等
+      handleSafe();
     }
+  };
+
+  const handleIsMine = () => {
+    setBackgroundColor("red");
+    finishGame();
+  };
+  const handleSafe = () => {
+    setBackgroundColor("green");
+    updateSafeCount();
+    setIsClicked(true);
   };
   return (
     <div
