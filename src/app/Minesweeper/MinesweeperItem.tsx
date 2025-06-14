@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { MineGap, MineWidth } from "@/app/Minesweeper/utils";
 
 const MinesweeperItem = ({
@@ -9,6 +9,7 @@ const MinesweeperItem = ({
   id,
   gameId,
   updateSafeCount,
+  mineCount,
 }: {
   finishGame: () => void;
   mine?: boolean;
@@ -16,6 +17,7 @@ const MinesweeperItem = ({
   id: string;
   gameId: number;
   updateSafeCount: () => void;
+  mineCount: number;
 }) => {
   const [isClicked, setIsClicked] = useState(false);
   const [isMine, setIsMine] = useState(false);
@@ -28,6 +30,9 @@ const MinesweeperItem = ({
 
   useEffect(() => {
     setIsMine(mine);
+    if (mine) {
+      setBackgroundColor("#eee");
+    }
   }, [mine]);
 
   useEffect(() => {
@@ -53,6 +58,16 @@ const MinesweeperItem = ({
     updateSafeCount();
     setIsClicked(true);
   };
+
+  const getLabel = useMemo(() => {
+    if (isClicked && isMine) {
+      return "雷";
+    } else if (isClicked && !isMine) {
+      return mineCount;
+    } else {
+      return "";
+    }
+  }, [mineCount, isClicked, isMine]);
   return (
     <div
       style={{
@@ -68,7 +83,7 @@ const MinesweeperItem = ({
       }}
       onClick={handleClick}
     >
-      <span></span>
+      <span>{getLabel}</span>
     </div>
   );
 };

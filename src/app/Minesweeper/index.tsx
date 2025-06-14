@@ -1,17 +1,12 @@
 "use client";
 import React, { useEffect, useMemo, useRef } from "react";
-import MinesweeperItem from "@/app/Minesweeper/MinesweeperItem";
-import { MapWidth } from "@/app/Minesweeper/utils";
 import { Button, Input } from "antd";
-const width = 2;
-const height = 2;
-const DefaultMineCount = 3;
+import MinesMap from "@/app/Minesweeper/MinesMap";
+import { generateMinesData } from "@/app/Minesweeper/dataFactory";
 
-interface MineInterface {
-  id: string; // x-y坐标 例如 '1-2' 表示第一行第二列的格子是否为雷
-  mine: boolean;
-  clicked: boolean;
-}
+const width = 5;
+const height = 5;
+const DefaultMineCount = 10;
 
 const Minesweeper = () => {
   const mounted = useRef(false);
@@ -35,6 +30,7 @@ const Minesweeper = () => {
   }, []);
 
   useEffect(() => {
+    console.log("safeCount:", safeCount);
     if (safeCount <= 0) {
       setIsGameOver(true);
       setNotice("Congratulations! You Win!");
@@ -42,33 +38,8 @@ const Minesweeper = () => {
   }, [safeCount]);
 
   const generateMineArray = () => {
-    const total = width * height;
-    const array = new Array(total).fill(0);
-    // 随机生成雷的位置
-    for (let i = 0; i < DefaultMineCount; i++) {
-      const index = Math.floor(Math.random() * total);
-      if (array[index] === 0) {
-        array[index] = 1;
-      } else {
-        i--;
-      }
-    }
-    const mineArrayTemp: MineInterface[] = array.map((item, index) => {
-      const x = Math.floor(index % width) + 1;
-      const y = Math.floor(index / width) + 1;
-      return {
-        id: `${x}-${y}`,
-        mine: item === 1,
-        clicked: false,
-      };
-    });
-    console.log("mineArrayTemp:", mineArrayTemp);
-    setMineArray(mineArrayTemp);
-    setMinesString(
-      mineArrayTemp
-        .filter(item => item.mine)
-        .map(item => item.id)
-        .join(" , ")
+    setMineArray(
+      generateMinesData({ width, height, mineCount: DefaultMineCount })
     );
   };
   const updateSafeCount = () => {
@@ -114,86 +85,6 @@ const Minesweeper = () => {
       setInputY(e.target.value);
     }
   };
-
-  const renderXCoordinates = useMemo(() => {
-    return (
-      <>
-        <div
-          style={{
-            position: "absolute",
-            left: 0,
-            top: -30,
-            width: MapWidth,
-            display: "flex",
-            justifyContent: "space-between",
-          }}
-        >
-          {new Array(width).fill(0).map((_, index) => {
-            return (
-              <span
-                style={{ color: "#000", width: "30px", textAlign: "center" }}
-                key={`x-${index}`}
-              >
-                {index + 1}
-              </span>
-            );
-          })}
-        </div>
-        <div
-          style={{
-            position: "absolute",
-            left: 0,
-            top: -50,
-            width: MapWidth,
-            textAlign: "center",
-          }}
-        >
-          X
-        </div>
-      </>
-    );
-  }, []);
-
-  const renderYCoordinates = useMemo(() => {
-    return (
-      <>
-        <div
-          style={{
-            position: "absolute",
-            left: -30,
-            top: 0,
-            height: MapWidth,
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "space-between",
-          }}
-        >
-          {new Array(width).fill(0).map((_, index) => {
-            return (
-              <span
-                style={{ color: "#000", width: "30px", textAlign: "center" }}
-                key={`y-${index}`}
-              >
-                {index + 1}
-              </span>
-            );
-          })}
-        </div>
-        <div
-          style={{
-            position: "absolute",
-            left: -40,
-            top: 0,
-            height: MapWidth,
-            display: "flex",
-            alignItems: "center",
-          }}
-        >
-          <span>Y</span>
-        </div>
-      </>
-    );
-  }, []);
 
   const renderOperationsArea = () => {
     return (
@@ -242,7 +133,6 @@ const Minesweeper = () => {
       </div>
     );
   };
-
   return (
     <div
       style={{
@@ -260,35 +150,15 @@ const Minesweeper = () => {
       >
         Minesweeper
       </h4>
-      <div
-        style={{
-          position: "relative",
-          width: MapWidth,
-        }}
-      >
-        <div
-          style={{
-            width: MapWidth,
-            display: "flex",
-            flexWrap: "wrap",
-          }}
-        >
-          {mineArray?.map((item: MineInterface, i: Number) => {
-            return (
-              <MinesweeperItem
-                {...item}
-                finishGame={finishGame}
-                key={item.id}
-                currentCoordinate={currentCoordinate}
-                gameId={gameId}
-                updateSafeCount={updateSafeCount}
-              />
-            );
-          })}
-        </div>
-        {renderXCoordinates}
-        {renderYCoordinates}
-      </div>
+      <MinesMap
+        data={mineArray}
+        currentCoordinate={currentCoordinate}
+        finishGame={finishGame}
+        width={width}
+        height={height}
+        gameId={gameId}
+        updateSafeCount={updateSafeCount}
+      />
       {renderOperationsArea()}
       <div
         style={{
