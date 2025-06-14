@@ -1,5 +1,5 @@
 import React, { FC, useMemo } from "react";
-import { MapWidth } from "@/app/Minesweeper/utils";
+
 import MinesweeperItem from "@/app/Minesweeper/MinesweeperItem";
 
 interface MineInterface {
@@ -37,7 +37,7 @@ const MinesMap: FC<MinesMapProps> = ({
           flexDirection: "row",
         }}
       >
-        {rowData?.map((item: MineInterface, i: number) => {
+        {rowData?.map((item: MineInterface) => {
           return (
             <MinesweeperItem
               {...item}
@@ -90,7 +90,7 @@ const MinesMap: FC<MinesMapProps> = ({
         </div>
       </>
     );
-  }, []);
+  }, [width]);
 
   const renderYCoordinates = useMemo(() => {
     return (
@@ -106,7 +106,7 @@ const MinesMap: FC<MinesMapProps> = ({
             height: "100%",
           }}
         >
-          {new Array(width).fill(0).map((_, index) => {
+          {new Array(height).fill(0).map((_, index) => {
             return (
               <span
                 style={{ color: "#000", width: "30px", textAlign: "center" }}
@@ -131,7 +131,7 @@ const MinesMap: FC<MinesMapProps> = ({
         </div>
       </>
     );
-  }, []);
+  }, [height]);
 
   return (
     <div

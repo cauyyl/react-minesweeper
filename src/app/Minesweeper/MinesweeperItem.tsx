@@ -1,6 +1,6 @@
 "use client";
 import React, { useEffect, useMemo, useState } from "react";
-import { MineGap, MineWidth } from "@/app/Minesweeper/utils";
+import { MineGap, MineHeight, MineWidth } from "@/app/Minesweeper/utils";
 
 const MinesweeperItem = ({
   finishGame,
@@ -72,7 +72,7 @@ const MinesweeperItem = ({
     <div
       style={{
         width: MineWidth,
-        height: MineWidth,
+        height: MineHeight,
         margin: `${MineGap}px`,
         border: "1px solid #ccc",
         display: "flex",

@@ -1,11 +1,11 @@
 "use client";
-import React, { useEffect, useMemo, useRef } from "react";
+import React, { useEffect, useRef } from "react";
 import { Button, Input } from "antd";
 import MinesMap from "@/app/Minesweeper/MinesMap";
 import { generateMinesData } from "@/app/Minesweeper/dataFactory";
 
 const width = 5;
-const height = 5;
+const height = 4;
 const DefaultMineCount = 10;
 
 const Minesweeper = () => {
@@ -17,7 +17,6 @@ const Minesweeper = () => {
   const [inputY, setInputY] = React.useState("");
   const [currentCoordinate, setCurrentCoordinate] = React.useState("");
   const [isGameOver, setIsGameOver] = React.useState(false);
-  const [minesString, setMinesString] = React.useState("");
   const [gameId, setGameId] = React.useState(1);
   const [safeCount, setSafeCount] = React.useState(
     width * height - DefaultMineCount
@@ -166,20 +165,6 @@ const Minesweeper = () => {
         }}
       >
         <span style={{ textAlign: "center" }}>{notice}</span>
-      </div>
-      <div
-        style={{
-          marginTop: 20,
-        }}
-      >
-        <p>地雷的坐标</p>
-        <span
-          style={{
-            textAlign: "center",
-          }}
-        >
-          {minesString}
-        </span>
       </div>
     </div>
   );

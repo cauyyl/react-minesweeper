@@ -7,7 +7,6 @@ const generateMinesData = ({
   height: number;
   mineCount: number;
 }) => {
-  const total = width * height;
   // 根据width和height生成一个二维数组,1代表雷，0代表空
   const numArrWithMine = generateSimpleArray(width, height, mineCount);
   // 统计每个格子周围的地雷数
