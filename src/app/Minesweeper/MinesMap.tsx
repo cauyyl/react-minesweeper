@@ -118,7 +118,6 @@ const MinesMap: FC<MinesMapProps> = ({
       </>
     );
   }, [height]);
-
   return (
     <div
       style={{

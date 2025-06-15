@@ -37,7 +37,25 @@ const Minesweeper = () => {
       setNotice("Congratulations! You Win!");
     }
   }, [safeCount]);
+  useEffect(() => {
+    updateSafeCount(mineArray);
+  }, [mineArray]);
 
+  const updateSafeCount = (data: MineInterface[][]) => {
+    if (Array.isArray(data) && data.length > 0) {
+      let countTemp = 0;
+      for (let i = 0; i < data.length; i++) {
+        for (let j = 0; j < data[i].length; j++) {
+          if (!data[i][j].isSwept && !data[i][j].mine) {
+            countTemp++;
+          }
+        }
+        console.log("countTemp:", countTemp);
+      }
+
+      setSafeCount(countTemp);
+    }
+  };
   const generateMineArray = () => {
     setMineArray(
       generateMinesData({
@@ -52,13 +70,16 @@ const Minesweeper = () => {
     if (item.mine) {
       // 当前格子是地雷，游戏结束，不需要做处理。
     } else if (item.mineCount > 0) {
-      setSafeCount(safeCount - 1);
+      // setSafeCount(safeCount - 1);
       // 当前格子周围有雷，只需要记录格子的点击状态
-      console.log(`格子${item.x}-${item.y}周围有雷`);
+      // console.log(`格子${item.x}-${item.y}周围有雷`);
+      mineArray[item.y][item.x].isSwept = true;
+      setMineArray(mineArray);
+      updateSafeCount(mineArray);
     } else {
-      setSafeCount(safeCount - 1);
+      // setSafeCount(safeCount - 1);
       // 当前格子周围没有雷，需要把周围的格子全部翻开
-      console.log(`格子${item.x}-${item.y}周围没有雷`);
+      // console.log(`格子${item.x}-${item.y}周围没有雷`);
       searchEmptyBox(mineArray, item.y, item.x);
     }
   };
@@ -104,6 +125,7 @@ const Minesweeper = () => {
       }
     }
     setMineArray(data);
+    updateSafeCount(data);
   };
 
   const restartGame = () => {

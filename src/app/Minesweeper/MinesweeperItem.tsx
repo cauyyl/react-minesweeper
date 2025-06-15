@@ -32,7 +32,7 @@ const MinesweeperItem = ({
   isGameOver: boolean;
   x: number;
   y: number;
-  isSwept: boolean;
+  isSwept?: boolean;
 }) => {
   const [isClicked, setIsClicked] = useState(false);
   const [isMine, setIsMine] = useState(false);
@@ -103,9 +103,9 @@ const MinesweeperItem = ({
   }, [mineCount, isClicked, isMine]);
 
   const handleMouseUp = (e: any) => {
-    console.log("x:", x);
-    console.log("y:", y);
-    console.log("id: ", id);
+    // console.log("x:", x);
+    // console.log("y:", y);
+    // console.log("id: ", id);
     e.preventDefault();
     if (e.button === 2) {
       console.log("右键");

@@ -34,7 +34,6 @@ function generateSimpleArray(
       count--;
     }
   }
-  console.log("array:", array);
   return array;
 }
 
@@ -88,7 +87,6 @@ function getMineCount(data: number[][]) {
       result[i][j] = count;
     }
   }
-  console.log("result:", result);
   return result;
 }
 
@@ -111,7 +109,6 @@ function generateMinesArray(
       };
     }
   }
-  console.log("result:", result);
   return result;
 }
 
