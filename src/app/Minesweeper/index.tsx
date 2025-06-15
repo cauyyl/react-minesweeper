@@ -20,14 +20,19 @@ const Minesweeper = () => {
   const [currentCoordinate, setCurrentCoordinate] = React.useState("");
   const [isGameOver, setIsGameOver] = React.useState(false);
   const [gameId, setGameId] = React.useState(1);
+  const [spendTime, setSpendTime] = React.useState(0);
   const [safeCount, setSafeCount] = React.useState(
     DefaultWidth * DefaultHeight - DefaultMineCount
   );
+  const timerRef = useRef<any>(null);
 
   useEffect(() => {
     if (mounted.current) return;
     generateMineArray();
     mounted.current = true;
+    return () => {
+      clearTimer();
+    };
   }, []);
 
   useEffect(() => {
@@ -37,9 +42,30 @@ const Minesweeper = () => {
       setNotice("Congratulations! You Win!");
     }
   }, [safeCount]);
+
   useEffect(() => {
     updateSafeCount(mineArray);
   }, [mineArray]);
+
+  useEffect(() => {
+    if (isGameOver) {
+      clearTimer();
+    }
+  }, [isGameOver]);
+  const startTimer = () => {
+    if (!timerRef.current) {
+      timerRef.current = setInterval(() => {
+        setSpendTime(prev => prev + 1);
+      }, 1000);
+    }
+  };
+
+  const clearTimer = () => {
+    if (timerRef?.current) {
+      clearInterval(timerRef.current);
+      timerRef.current = null;
+    }
+  };
 
   const updateSafeCount = (data: MineInterface[][]) => {
     if (Array.isArray(data) && data.length > 0) {
@@ -66,6 +92,9 @@ const Minesweeper = () => {
     );
   };
   const onClickBox = (item: MineInterface) => {
+    if (!timerRef.current) {
+      startTimer();
+    }
     // 传过来x，y，都是从0开始的， mine为true表示为雷，mineCount表示当前格子周围雷的数量
     if (item.mine) {
       // 当前格子是地雷，游戏结束，不需要做处理。
@@ -135,6 +164,7 @@ const Minesweeper = () => {
     setIsGameOver(false);
     setGameId(gameId + 1);
     setSafeCount(DefaultWidth * DefaultHeight - DefaultMineCount);
+    setSpendTime(0);
   };
 
   const finishGame = () => {
@@ -144,13 +174,13 @@ const Minesweeper = () => {
   };
 
   const handleCheckCoordinates = () => {
-    setCurrentCoordinate(`${inputX}-${inputY}`);
+    setCurrentCoordinate(`${Number(inputX) - 1}-${Number(inputY) - 1}`);
     setInputX("");
     setInputY("");
   };
   const handleXChange = (e: any) => {
     const value = e.target.value;
-    if (value <= 0 || value > DefaultWidth) {
+    if (value < 1 || value > DefaultWidth) {
       setNotice("x坐标超出范围，请重新输入");
       setInputX("");
     } else {
@@ -161,7 +191,7 @@ const Minesweeper = () => {
 
   const handleYChange = (e: any) => {
     const value = e.target.value;
-    if (value <= 0 || value > DefaultHeight) {
+    if (value < 1 || value > DefaultHeight) {
       setNotice("y坐标超出范围，请重新输入");
       setInputY("");
     } else {
@@ -218,6 +248,7 @@ const Minesweeper = () => {
   return (
     <div
       style={{
+        position: "relative",
         display: "flex",
         flexDirection: "column",
         justifyContent: "center",
@@ -238,7 +269,7 @@ const Minesweeper = () => {
         >
           Minesweeper
         </h4>
-        <span>剩余安全格数：{safeCount}</span>
+        <span>safe box count：{safeCount}</span>
       </div>
       <MinesMap
         data={mineArray}
@@ -257,6 +288,15 @@ const Minesweeper = () => {
         }}
       >
         <span style={{ textAlign: "center" }}>{notice}</span>
+      </div>
+      <div
+        style={{
+          position: "absolute",
+          top: 0,
+          right: 0,
+        }}
+      >
+        {spendTime}s
       </div>
     </div>
   );
