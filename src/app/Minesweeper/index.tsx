@@ -141,14 +141,22 @@ const Minesweeper = () => {
         alignItems: "center",
       }}
     >
-      <h4
+      <div
         style={{
           marginBottom: 60,
           textAlign: "center",
         }}
       >
-        Minesweeper
-      </h4>
+        <h4
+          style={{
+            textAlign: "center",
+            marginBottom: 10,
+          }}
+        >
+          Minesweeper
+        </h4>
+        <span>剩余安全格数：{safeCount}</span>
+      </div>
       <MinesMap
         data={mineArray}
         currentCoordinate={currentCoordinate}
@@ -157,6 +165,7 @@ const Minesweeper = () => {
         height={height}
         gameId={gameId}
         updateSafeCount={updateSafeCount}
+        isGameOver={isGameOver}
       />
       {renderOperationsArea()}
       <div

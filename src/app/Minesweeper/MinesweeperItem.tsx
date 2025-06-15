@@ -1,6 +1,7 @@
 "use client";
 import React, { useEffect, useMemo, useState } from "react";
 import { MineGap, MineHeight, MineWidth } from "@/app/Minesweeper/utils";
+import { Button } from "antd";
 
 const MinesweeperItem = ({
   finishGame,
@@ -10,6 +11,7 @@ const MinesweeperItem = ({
   gameId,
   updateSafeCount,
   mineCount,
+  isGameOver,
 }: {
   finishGame: () => void;
   mine?: boolean;
@@ -18,6 +20,7 @@ const MinesweeperItem = ({
   gameId: number;
   updateSafeCount: () => void;
   mineCount: number;
+  isGameOver: boolean;
 }) => {
   const [isClicked, setIsClicked] = useState(false);
   const [isMine, setIsMine] = useState(false);
@@ -50,16 +53,18 @@ const MinesweeperItem = ({
   };
 
   const handleIsMine = () => {
-    setBackgroundColor("red");
+    setBackgroundColor("#efabab");
+    setIsClicked(true);
     finishGame();
   };
   const handleSafe = () => {
-    setBackgroundColor("green");
+    setBackgroundColor("#b9f3b9");
     updateSafeCount();
     setIsClicked(true);
   };
 
   const getLabel = useMemo(() => {
+    console.log("isClicked, isMine", isClicked, "-", isMine);
     if (isClicked && isMine) {
       return "雷";
     } else if (isClicked && !isMine) {
@@ -81,7 +86,8 @@ const MinesweeperItem = ({
     }
   };
   return (
-    <div
+    <Button
+      disabled={isGameOver}
       style={{
         width: MineWidth,
         height: MineHeight,
@@ -100,8 +106,8 @@ const MinesweeperItem = ({
         e.preventDefault();
       }}
     >
-      <span>{getLabel}</span>
-    </div>
+      {getLabel}
+    </Button>
   );
 };
 

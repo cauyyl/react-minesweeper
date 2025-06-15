@@ -17,6 +17,7 @@ interface MinesMapProps {
   updateSafeCount: () => void;
   width: number;
   height: number;
+  isGameOver: boolean;
 }
 
 const MinesMap: FC<MinesMapProps> = ({
@@ -27,6 +28,7 @@ const MinesMap: FC<MinesMapProps> = ({
   updateSafeCount,
   width,
   height,
+  isGameOver,
 }) => {
   const renderRow = (rowData: MineInterface[], index: number) => {
     return (
@@ -46,6 +48,7 @@ const MinesMap: FC<MinesMapProps> = ({
               currentCoordinate={currentCoordinate}
               gameId={gameId}
               updateSafeCount={updateSafeCount}
+              isGameOver={isGameOver}
             />
           );
         })}
