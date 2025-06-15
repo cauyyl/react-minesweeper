@@ -5,6 +5,7 @@ export interface MineInterface {
   mineCount: number;
   x: number;
   y: number;
+  isSwept?: boolean;
 }
 
 export interface MinesMapProps {

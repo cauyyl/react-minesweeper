@@ -20,6 +20,7 @@ const MinesweeperItem = ({
   isGameOver,
   x,
   y,
+  isSwept,
 }: {
   finishGame: () => void;
   mine?: boolean;
@@ -31,6 +32,7 @@ const MinesweeperItem = ({
   isGameOver: boolean;
   x: number;
   y: number;
+  isSwept: boolean;
 }) => {
   const [isClicked, setIsClicked] = useState(false);
   const [isMine, setIsMine] = useState(false);
@@ -44,9 +46,15 @@ const MinesweeperItem = ({
   useEffect(() => {
     setIsMine(mine);
     if (GodMode && mine) {
-      setBackgroundColor("#eee");
+      setBackgroundColor("#a3d3f1");
     }
   }, [mine]);
+
+  useEffect(() => {
+    if (isSwept) {
+      handleClick();
+    }
+  }, [isSwept]);
 
   useEffect(() => {
     if (currentCoordinate == id) {
@@ -68,7 +76,12 @@ const MinesweeperItem = ({
     finishGame();
   };
   const handleSafe = () => {
-    setBackgroundColor("#b9f3b9");
+    if (mineCount > 0) {
+      setBackgroundColor("#b9f3b9");
+    } else {
+      setBackgroundColor("#eee");
+    }
+
     onClickBox({
       x,
       y,
@@ -83,13 +96,16 @@ const MinesweeperItem = ({
     if (isClicked && isMine) {
       return "雷";
     } else if (isClicked && !isMine) {
-      return mineCount;
+      return mineCount > 0 ? mineCount : "";
     } else {
       return "";
     }
   }, [mineCount, isClicked, isMine]);
 
   const handleMouseUp = (e: any) => {
+    console.log("x:", x);
+    console.log("y:", y);
+    console.log("id: ", id);
     e.preventDefault();
     if (e.button === 2) {
       console.log("右键");
@@ -114,7 +130,7 @@ const MinesweeperItem = ({
         cursor: "pointer",
         backgroundColor: backgroundColor,
       }}
-      onClick={handleClick}
+      // onClick={handleClick}
       // onMouseDown={handleMouseDown}
       onMouseUp={handleMouseUp}
       onContextMenu={e => {

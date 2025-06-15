@@ -102,15 +102,16 @@ function generateMinesArray(
   for (let i = 0; i < height; i++) {
     for (let j = 0; j < width; j++) {
       result[i][j] = {
-        id: `${i}-${j}`,
-        x: i,
-        y: j,
-        mine: mineArray[i][j] == 1,
+        id: `${j}-${i}`,
+        x: j,
+        y: i,
+        mine: mineArray[j][i] == 1,
         clicked: false,
-        mineCount: countArray[i][j],
+        mineCount: countArray[j][i],
       };
     }
   }
+  console.log("result:", result);
   return result;
 }
 

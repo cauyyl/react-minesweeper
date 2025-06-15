@@ -59,8 +59,53 @@ const Minesweeper = () => {
       setSafeCount(safeCount - 1);
       // 当前格子周围没有雷，需要把周围的格子全部翻开
       console.log(`格子${item.x}-${item.y}周围没有雷`);
+      searchEmptyBox(mineArray, item.y, item.x);
     }
   };
+
+  const searchEmptyBox = (data: MineInterface[][], x: number, y: number) => {
+    data[x][y].isSwept = true;
+    if (data[x][y].mineCount == 0) {
+      // 翻转上方的格子
+      if (x - 1 >= 0 && !data[x - 1][y].isSwept) {
+        searchEmptyBox(data, x - 1, y);
+      }
+      // 翻转下方的格子
+      if (x + 1 < DefaultHeight && !data[x + 1][y].isSwept) {
+        searchEmptyBox(data, x + 1, y);
+      }
+      // 翻转左方的格子
+      if (y - 1 >= 0 && !data[x][y - 1].isSwept) {
+        searchEmptyBox(data, x, y - 1);
+      }
+      // 翻转右方的格子
+      if (y + 1 < DefaultWidth && !data[x][y + 1].isSwept) {
+        searchEmptyBox(data, x, y + 1);
+      }
+      // 翻转左上方的格子
+      if (x - 1 >= 0 && y - 1 >= 0 && !data[x - 1][y - 1].isSwept) {
+        searchEmptyBox(data, x - 1, y - 1);
+      }
+      // 翻转左下方的格子
+      if (x + 1 < DefaultHeight && y - 1 >= 0 && !data[x + 1][y - 1].isSwept) {
+        searchEmptyBox(data, x + 1, y - 1);
+      }
+      // 翻转右上方的格子
+      if (x - 1 >= 0 && y + 1 < DefaultWidth && !data[x - 1][y + 1].isSwept) {
+        searchEmptyBox(data, x - 1, y + 1);
+      }
+      // 翻转右下方的格子
+      if (
+        x + 1 < DefaultHeight &&
+        y + 1 < DefaultWidth &&
+        !data[x + 1][y + 1].isSwept
+      ) {
+        searchEmptyBox(data, x + 1, y + 1);
+      }
+    }
+    setMineArray(data);
+  };
+
   const restartGame = () => {
     generateMineArray();
     setNotice("");
@@ -129,15 +174,14 @@ const Minesweeper = () => {
             value={inputY}
           />
         </div>
-        {isGameOver ? (
-          <Button
-            type="primary"
-            onClick={restartGame}
-            style={{ marginTop: 10 }}
-          >
-            重新开始
-          </Button>
-        ) : (
+        <Button
+          type="primary"
+          onClick={restartGame}
+          style={{ marginTop: 10, marginRight: 20 }}
+        >
+          重新开始
+        </Button>
+        {isGameOver ? null : (
           <Button
             type="primary"
             onClick={handleCheckCoordinates}
