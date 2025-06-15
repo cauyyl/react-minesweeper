@@ -5,8 +5,8 @@ import MinesMap from "@/app/Minesweeper/MinesMap";
 import { generateMinesData } from "@/app/Minesweeper/dataFactory";
 
 const width = 5;
-const height = 4;
-const DefaultMineCount = 10;
+const height = 5;
+const DefaultMineCount = 5;
 
 const Minesweeper = () => {
   const mounted = useRef(false);
@@ -50,8 +50,9 @@ const Minesweeper = () => {
     setCurrentCoordinate("");
     setIsGameOver(false);
     setGameId(gameId + 1);
-    setSafeCount(DefaultMineCount);
+    setSafeCount(width * height - DefaultMineCount);
   };
+
   const finishGame = () => {
     console.log("game over");
     setNotice("Game Over");
@@ -111,7 +112,6 @@ const Minesweeper = () => {
             value={inputY}
           />
         </div>
-
         {isGameOver ? (
           <Button
             type="primary"

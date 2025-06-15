@@ -68,6 +68,18 @@ const MinesweeperItem = ({
       return "";
     }
   }, [mineCount, isClicked, isMine]);
+
+  const handleMouseUp = (e: any) => {
+    e.preventDefault();
+    if (e.button === 2) {
+      console.log("右键");
+      // 暂时不支持右键标记为雷，因为这样，需要引入更复杂的逻辑，暂时不实现
+      handleClick();
+    } else {
+      console.log("左键");
+      handleClick();
+    }
+  };
   return (
     <div
       style={{
@@ -82,6 +94,11 @@ const MinesweeperItem = ({
         backgroundColor: backgroundColor,
       }}
       onClick={handleClick}
+      // onMouseDown={handleMouseDown}
+      onMouseUp={handleMouseUp}
+      onContextMenu={e => {
+        e.preventDefault();
+      }}
     >
       <span>{getLabel}</span>
     </div>
