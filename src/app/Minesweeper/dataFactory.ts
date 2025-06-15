@@ -103,6 +103,8 @@ function generateMinesArray(
     for (let j = 0; j < width; j++) {
       result[i][j] = {
         id: `${i}-${j}`,
+        x: i,
+        y: j,
         mine: mineArray[i][j] == 1,
         clicked: false,
         mineCount: countArray[i][j],

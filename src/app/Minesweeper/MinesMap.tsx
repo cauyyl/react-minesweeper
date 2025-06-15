@@ -1,31 +1,14 @@
 import React, { FC, useMemo } from "react";
 
 import MinesweeperItem from "@/app/Minesweeper/MinesweeperItem";
-
-interface MineInterface {
-  id: string; // x-y坐标 例如 '1-2' 表示第一行第二列的格子是否为雷
-  mine: boolean;
-  clicked: boolean;
-  mineCount: number;
-}
-
-interface MinesMapProps {
-  data: any;
-  finishGame: () => void;
-  currentCoordinate: string;
-  gameId: number;
-  updateSafeCount: () => void;
-  width: number;
-  height: number;
-  isGameOver: boolean;
-}
+import { MineInterface, MinesMapProps } from "@/app/Minesweeper/mine";
 
 const MinesMap: FC<MinesMapProps> = ({
   data,
   finishGame,
   currentCoordinate,
   gameId,
-  updateSafeCount,
+  onClickBox,
   width,
   height,
   isGameOver,
@@ -47,7 +30,7 @@ const MinesMap: FC<MinesMapProps> = ({
               key={item.id}
               currentCoordinate={currentCoordinate}
               gameId={gameId}
-              updateSafeCount={updateSafeCount}
+              onClickBox={onClickBox}
               isGameOver={isGameOver}
             />
           );

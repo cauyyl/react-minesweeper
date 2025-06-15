@@ -3,10 +3,12 @@ import React, { useEffect, useRef } from "react";
 import { Button, Input } from "antd";
 import MinesMap from "@/app/Minesweeper/MinesMap";
 import { generateMinesData } from "@/app/Minesweeper/dataFactory";
-
-const width = 5;
-const height = 5;
-const DefaultMineCount = 5;
+import { MineInterface } from "@/app/Minesweeper/mine";
+import {
+  DefaultHeight,
+  DefaultMineCount,
+  DefaultWidth,
+} from "@/app/Minesweeper/utils";
 
 const Minesweeper = () => {
   const mounted = useRef(false);
@@ -19,7 +21,7 @@ const Minesweeper = () => {
   const [isGameOver, setIsGameOver] = React.useState(false);
   const [gameId, setGameId] = React.useState(1);
   const [safeCount, setSafeCount] = React.useState(
-    width * height - DefaultMineCount
+    DefaultWidth * DefaultHeight - DefaultMineCount
   );
 
   useEffect(() => {
@@ -38,11 +40,26 @@ const Minesweeper = () => {
 
   const generateMineArray = () => {
     setMineArray(
-      generateMinesData({ width, height, mineCount: DefaultMineCount })
+      generateMinesData({
+        width: DefaultWidth,
+        height: DefaultHeight,
+        mineCount: DefaultMineCount,
+      })
     );
   };
-  const updateSafeCount = () => {
-    setSafeCount(safeCount - 1);
+  const onClickBox = (item: MineInterface) => {
+    // 传过来x，y，都是从0开始的， mine为true表示为雷，mineCount表示当前格子周围雷的数量
+    if (item.mine) {
+      // 当前格子是地雷，游戏结束，不需要做处理。
+    } else if (item.mineCount > 0) {
+      setSafeCount(safeCount - 1);
+      // 当前格子周围有雷，只需要记录格子的点击状态
+      console.log(`格子${item.x}-${item.y}周围有雷`);
+    } else {
+      setSafeCount(safeCount - 1);
+      // 当前格子周围没有雷，需要把周围的格子全部翻开
+      console.log(`格子${item.x}-${item.y}周围没有雷`);
+    }
   };
   const restartGame = () => {
     generateMineArray();
@@ -50,7 +67,7 @@ const Minesweeper = () => {
     setCurrentCoordinate("");
     setIsGameOver(false);
     setGameId(gameId + 1);
-    setSafeCount(width * height - DefaultMineCount);
+    setSafeCount(DefaultWidth * DefaultHeight - DefaultMineCount);
   };
 
   const finishGame = () => {
@@ -66,7 +83,7 @@ const Minesweeper = () => {
   };
   const handleXChange = (e: any) => {
     const value = e.target.value;
-    if (value <= 0 || value > width) {
+    if (value <= 0 || value > DefaultWidth) {
       setNotice("x坐标超出范围，请重新输入");
       setInputX("");
     } else {
@@ -77,7 +94,7 @@ const Minesweeper = () => {
 
   const handleYChange = (e: any) => {
     const value = e.target.value;
-    if (value <= 0 || value > height) {
+    if (value <= 0 || value > DefaultHeight) {
       setNotice("y坐标超出范围，请重新输入");
       setInputY("");
     } else {
@@ -161,10 +178,10 @@ const Minesweeper = () => {
         data={mineArray}
         currentCoordinate={currentCoordinate}
         finishGame={finishGame}
-        width={width}
-        height={height}
+        width={DefaultWidth}
+        height={DefaultHeight}
         gameId={gameId}
-        updateSafeCount={updateSafeCount}
+        onClickBox={onClickBox}
         isGameOver={isGameOver}
       />
       {renderOperationsArea()}

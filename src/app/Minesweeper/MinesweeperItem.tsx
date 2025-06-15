@@ -1,7 +1,13 @@
 "use client";
 import React, { useEffect, useMemo, useState } from "react";
-import { MineGap, MineHeight, MineWidth } from "@/app/Minesweeper/utils";
+import {
+  GodMode,
+  MineGap,
+  MineHeight,
+  MineWidth,
+} from "@/app/Minesweeper/utils";
 import { Button } from "antd";
+import { MineInterface } from "@/app/Minesweeper/mine";
 
 const MinesweeperItem = ({
   finishGame,
@@ -9,18 +15,22 @@ const MinesweeperItem = ({
   currentCoordinate,
   id,
   gameId,
-  updateSafeCount,
+  onClickBox,
   mineCount,
   isGameOver,
+  x,
+  y,
 }: {
   finishGame: () => void;
   mine?: boolean;
   currentCoordinate: string;
-  id: string;
+  id?: string;
   gameId: number;
-  updateSafeCount: () => void;
+  onClickBox: (item: MineInterface) => void;
   mineCount: number;
   isGameOver: boolean;
+  x: number;
+  y: number;
 }) => {
   const [isClicked, setIsClicked] = useState(false);
   const [isMine, setIsMine] = useState(false);
@@ -33,7 +43,7 @@ const MinesweeperItem = ({
 
   useEffect(() => {
     setIsMine(mine);
-    if (mine) {
+    if (GodMode && mine) {
       setBackgroundColor("#eee");
     }
   }, [mine]);
@@ -59,12 +69,17 @@ const MinesweeperItem = ({
   };
   const handleSafe = () => {
     setBackgroundColor("#b9f3b9");
-    updateSafeCount();
+    onClickBox({
+      x,
+      y,
+      mine,
+      mineCount,
+    });
     setIsClicked(true);
   };
 
   const getLabel = useMemo(() => {
-    console.log("isClicked, isMine", isClicked, "-", isMine);
+    // console.log("isClicked, isMine", isClicked, "-", isMine);
     if (isClicked && isMine) {
       return "雷";
     } else if (isClicked && !isMine) {
