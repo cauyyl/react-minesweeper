@@ -1,6 +1,13 @@
 "use client";
 import React, { useEffect, useMemo, useState } from "react";
-import { MineGap, MineHeight, MineWidth } from "@/app/Minesweeper/utils";
+import {
+  GodMode,
+  MineGap,
+  MineHeight,
+  MineWidth,
+} from "@/app/Minesweeper/utils";
+import { Button } from "antd";
+import { MineInterface } from "@/app/Minesweeper/mine";
 
 const MinesweeperItem = ({
   finishGame,
@@ -8,16 +15,24 @@ const MinesweeperItem = ({
   currentCoordinate,
   id,
   gameId,
-  updateSafeCount,
+  onClickBox,
   mineCount,
+  isGameOver,
+  x,
+  y,
+  isSwept,
 }: {
   finishGame: () => void;
   mine?: boolean;
   currentCoordinate: string;
-  id: string;
+  id?: string;
   gameId: number;
-  updateSafeCount: () => void;
+  onClickBox: (item: MineInterface) => void;
   mineCount: number;
+  isGameOver: boolean;
+  x: number;
+  y: number;
+  isSwept?: boolean;
 }) => {
   const [isClicked, setIsClicked] = useState(false);
   const [isMine, setIsMine] = useState(false);
@@ -30,10 +45,16 @@ const MinesweeperItem = ({
 
   useEffect(() => {
     setIsMine(mine);
-    if (mine) {
-      setBackgroundColor("#eee");
+    if (GodMode && mine) {
+      setBackgroundColor("#a3d3f1");
     }
   }, [mine]);
+
+  useEffect(() => {
+    if (isSwept) {
+      handleClick();
+    }
+  }, [isSwept]);
 
   useEffect(() => {
     if (currentCoordinate == id) {
@@ -50,26 +71,54 @@ const MinesweeperItem = ({
   };
 
   const handleIsMine = () => {
-    setBackgroundColor("red");
+    setBackgroundColor("#efabab");
+    setIsClicked(true);
     finishGame();
   };
   const handleSafe = () => {
-    setBackgroundColor("green");
-    updateSafeCount();
+    if (mineCount > 0) {
+      setBackgroundColor("#b9f3b9");
+    } else {
+      setBackgroundColor("#eee");
+    }
+
+    onClickBox({
+      x,
+      y,
+      mine,
+      mineCount,
+    });
     setIsClicked(true);
   };
 
   const getLabel = useMemo(() => {
+    // console.log("isClicked, isMine", isClicked, "-", isMine);
     if (isClicked && isMine) {
       return "雷";
     } else if (isClicked && !isMine) {
-      return mineCount;
+      return mineCount > 0 ? mineCount : "";
     } else {
       return "";
     }
   }, [mineCount, isClicked, isMine]);
+
+  const handleMouseUp = (e: any) => {
+    // console.log("x:", x);
+    // console.log("y:", y);
+    // console.log("id: ", id);
+    e.preventDefault();
+    if (e.button === 2) {
+      console.log("右键");
+      // 暂时不支持右键标记为雷，因为这样，需要引入更复杂的逻辑，暂时不实现
+      handleClick();
+    } else {
+      console.log("左键");
+      handleClick();
+    }
+  };
   return (
-    <div
+    <Button
+      disabled={isGameOver}
       style={{
         width: MineWidth,
         height: MineHeight,
@@ -81,10 +130,15 @@ const MinesweeperItem = ({
         cursor: "pointer",
         backgroundColor: backgroundColor,
       }}
-      onClick={handleClick}
+      // onClick={handleClick}
+      // onMouseDown={handleMouseDown}
+      onMouseUp={handleMouseUp}
+      onContextMenu={e => {
+        e.preventDefault();
+      }}
     >
-      <span>{getLabel}</span>
-    </div>
+      {getLabel}
+    </Button>
   );
 };
 
