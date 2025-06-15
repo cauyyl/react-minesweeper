@@ -7,7 +7,9 @@ import {
   MineWidth,
 } from "@/app/Minesweeper/utils";
 import { Button } from "antd";
+import Image from "next/image";
 import { MineInterface } from "@/app/Minesweeper/mine";
+import MineImage from "@/public/images/icons/icon_mine.jpg";
 
 const MinesweeperItem = ({
   finishGame,
@@ -71,7 +73,7 @@ const MinesweeperItem = ({
   };
 
   const handleIsMine = () => {
-    setBackgroundColor("#efabab");
+    setBackgroundColor("#FFF");
     setIsClicked(true);
     finishGame();
   };
@@ -94,7 +96,9 @@ const MinesweeperItem = ({
   const getLabel = useMemo(() => {
     // console.log("isClicked, isMine", isClicked, "-", isMine);
     if (isClicked && isMine) {
-      return "雷";
+      return (
+        <Image width={MineWidth} height={MineHeight} src={MineImage} alt={""} />
+      );
     } else if (isClicked && !isMine) {
       return mineCount > 0 ? mineCount : "";
     } else {
